@@ -1,0 +1,34 @@
+.score-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.score-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.score-value {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.score-total {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.score-percentage {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}

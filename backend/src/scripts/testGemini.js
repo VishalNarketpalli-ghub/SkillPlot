@@ -1,35 +1,29 @@
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { generateStructuredOutput } from '../utils/gemini.js';
+dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.join(__dirname, '../../../.env') });
+const apiKey = process.env.GEMINI_API_KEY;
+if (!apiKey) {
+    console.log("No GEMINI_API_KEY found");
+    process.exit(1);
+}
 
-const runTest = async () => {
-  console.log('Testing Gemini API integration...');
-  console.log(`Using API Key: ${process.env.GEMINI_API_KEY ? 'Set' : 'Missing'}`);
+console.log(`GEMINI_API_KEY_PRESENT=${!!apiKey}`);
+console.log(`GEMINI_API_KEY_LENGTH=${apiKey.length}`);
+console.log(`GEMINI_API_KEY_HAS_LEADING_WHITESPACE=${/^\s/.test(apiKey)}`);
+console.log(`GEMINI_API_KEY_HAS_TRAILING_WHITESPACE=${/\s$/.test(apiKey)}`);
+console.log(`GEMINI_API_KEY_HAS_SURROUNDING_QUOTES=${/^["'].*["']$/.test(apiKey)}`);
 
-  const prompt = `Extract skills from this text: "I have 5 years of experience in JavaScript and Node.js."`;
-  const schema = {
-    type: "object",
-    properties: {
-      skills: {
-        type: "array",
-        items: { type: "string" }
-      }
-    },
-    required: ["skills"]
-  };
+const ai = new GoogleGenerativeAI(apiKey);
 
-  try {
-    const result = await generateStructuredOutput(prompt, schema);
-    console.log('Success! Output:');
-    console.log(JSON.stringify(result, null, 2));
-  } catch (error) {
-    console.error('Test failed:', error.message);
-  }
-};
-
-runTest();
+// Since we can't easily list models without the fetch API directly, we'll try 'gemini-3.1-pro-preview'
+async function test() {
+    try {
+        const model = ai.getGenerativeModel({ model: "gemini-3.1-pro-preview" });
+        await model.generateContent("test");
+        console.log("gemini-3.1-pro-preview works");
+    } catch(e) {
+        console.log("gemini-3.1-pro-preview error:", e.message);
+    }
+}
+test();

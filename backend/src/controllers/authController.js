@@ -15,6 +15,10 @@ export const register = async (req, res, next) => {
       return res.status(409).json({ success: false, message: 'Email already exists', code: 'DUPLICATE_EMAIL' });
     }
 
+    // WHY: Never persist the raw password. 
+    // Authentication later depends on comparing the submitted password
+    // against this bcrypt hash. We use saltRounds=10 as the standard balance
+    // between security and performance.
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 

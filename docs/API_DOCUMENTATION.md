@@ -146,6 +146,26 @@ Workflow selection is based on a static template lookup using the user's `target
 
 ---
 
+## AI Interview Evaluation Schema
+
+**JSON Schema Contract for Phase 2 Interview Responses:**
+```json
+{
+  "technicalCorrectness": "Number (0-10)",
+  "relevance": "Number (0-10)",
+  "completeness": "Number (0-10)",
+  "communication": "Number (0-10)",
+  "overallScore": "Number (0-10)",
+  "strengths": ["Array of strings"],
+  "weaknesses": ["Array of strings"],
+  "feedback": "String",
+  "followUpQuestion": "String (optional)"
+}
+```
+This schema is strictly adhered to by the `InterviewResponse` MongoDB model and the Gemini extraction prompts. All Phase 2 evaluations must match this shape exactly.
+
+---
+
 ## Error Contract
 
 The backend should use a consistent JSON error structure once implemented, for example:

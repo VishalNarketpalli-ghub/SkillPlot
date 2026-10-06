@@ -1,180 +1,350 @@
-# DATABASE_DESIGN.md — Phase 1
+# API_DOCUMENTATION.md — Phase 1
 
-## Database
+This document records the APIs actually implemented in Phase 1.
 
-MongoDB Atlas with Mongoose.
+## Authentication
 
-## Phase 1 Collections
+### POST `/api/auth/register`
 
-Only the collections required by Phase 1 should be created.
+**Purpose:** Create a user account.
 
----
+**Authentication:** None.
 
-# 1. users
+**Request:** Core registration fields and password.
 
-## Purpose
-Stores authentication and core candidate profile information.
+**Validation:**
+- Required fields must be present.
+- Email must be valid.
+- Password must satisfy the implemented password policy.
+- Duplicate email must be rejected.
 
-## Core Fields
+**Response:** User-safe account data and authentication result according to the implemented contract.
 
-```text
-_id
-name
-email
-passwordHash
-education
-degree
-branch
-graduationYear
-skills[]
-targetRole
-experienceLevel
-resumeId
-personalityProfileId
-createdAt
-updatedAt
-```
+**Errors:**
+- 400 validation failure
+- 409 duplicate email
+- 500 server failure
 
-## Rules
-- `email` should be unique.
-- `passwordHash` must never be returned to the frontend.
-- `personalityProfileId` remains null until the optional personality module is implemented.
+### POST `/api/auth/login`
 
-## Relationships
-- User → Resume through `resumeId`.
-- Future assessment/interview data will reference `userId`.
+**Authentication:** None.
+
+**Request:** Email + password.
+
+**Validation:** Required fields.
+
+**Response:** JWT + safe user information.
+
+**Errors:**
+- 400 invalid input
+- 401 invalid credentials
+- 500 server failure
 
 ---
 
-# 2. resumes
+## User
 
-## Purpose
-Stores uploaded resume metadata and extracted information.
+### GET `/api/users/me`
 
-## Core Fields
+**Authentication:** JWT required.
 
-```text
-_id
-userId
-fileName
-fileType
-storageReference
-extractedText
-extractedSkills[]
-education[]
-projects[]
-experience[]
-certifications[]
-analysis
-createdAt
-updatedAt
-```
+**Purpose:** Return the authenticated user's profile.
 
-The exact fields must match the implemented schema.
+### PUT `/api/users/me`
 
-## Relationships
-- Many resume records may belong to a user over time if versioning is supported.
-- User can reference the current resume.
+**Authentication:** JWT required.
 
----
+**Purpose:** Update core profile fields.
 
-# 3. jobDescriptions
-
-## Purpose
-Stores the JD submitted for analysis.
-
-## Core Fields
-
-```text
-_id
-userId
-title
-company
-rawText
-requiredSkills[]
-preferredSkills[]
-experienceRequirements
-technicalRequirements[]
-competencies[]
-analysis
-createdAt
-updatedAt
-```
-
-## Relationships
-- Job description belongs to a user.
-- Resume-vs-JD match information may be stored in the JD analysis or an explicitly created match structure if required by implementation.
-
----
-
-# Phase 1 Relationships
-
-```text
-USER
- │
- ├── resumeId ──> RESUME
- │
- └── userId <──── JOB DESCRIPTION
-```
-
-## Indexes
-
-At minimum:
-- unique index on `users.email`
-- index on `resumes.userId`
-- index on `jobDescriptions.userId`
-
-Only add additional indexes when query patterns justify them.
-
----
-
-# Embedded vs Referenced
-
-### Embed
-Use embedded structures for small, tightly coupled information such as:
+Core fields:
+- name
 - education
-- extracted skill arrays
-- simple analysis metadata
-
-### Reference
-Use references for entities that grow independently or are accessed separately:
-- user → resume
-- future assessments
-- future interviews
-- future performance reports
-
-The final choice must follow the implemented schema rather than this planning document.
+- degree
+- branch
+- graduation year
+- skills
+- target role
+- experience level
 
 ---
 
-# Phase 1 Data Flow
+## Resume
+
+### POST `/api/resume/upload`
+
+**Authentication:** JWT required.
+
+**Purpose:** Upload and process a resume.
+
+**Input:** Multipart file.
+
+**Processing:**
+1. Validate file.
+2. Store metadata/file according to implemented storage.
+3. Extract text.
+4. Run deterministic preprocessing.
+5. Run Gemini-assisted structured extraction.
+6. Validate AI output.
+7. Store parsed information.
+
+### GET `/api/resume/:id`
+
+**Authentication:** JWT required.
+
+**Purpose:** Return a user's stored resume data.
+
+---
+
+## Job Description
+
+### POST `/api/job-description/analyze`
+
+**Authentication:** JWT required.
+
+**Purpose:** Analyze pasted/uploaded JD.
+
+**Processing:**
+1. Validate input.
+2. Store raw JD.
+3. Send JD text through Gemini structured extraction.
+4. Validate result.
+5. Store requirements.
+
+---
+
+## Match Score
+
+### GET `/api/analysis/match`
+
+**Authentication:** JWT required.
+
+**Purpose:** Calculate and return the deterministic match score between the user's resume and job description.
+
+The authoritative match score is calculated by backend deterministic logic (keyword overlap). Gemini is not responsible for the final score.
+
+**Response Data:**
+- `score`: Integer representing the percentage match (0-100).
+- `matchedSkills`: Array of overlapping skills found in both.
+- `missingSkills`: Array of required/preferred skills missing from the resume.
+- `jobTitle`: The target job title.
+
+---
+
+## Workflow
+
+### GET `/api/analysis/workflow`
+
+**Authentication:** JWT required.
+
+**Purpose:** Returns the static, per-role workflow for the user's dashboard.
+
+Workflow selection is based on a static template lookup using the user's `targetRole`. It is not generated by AI.
+
+**Response Data:**
+- `workflow`: Array of strings representing the simulation stages.
+- `role`: The role string used to determine the workflow.
+
+---
+
+# Phase 2 APIs
+
+The Phase 2 APIs support the recruitment simulation stages:
+
+- Vocabulary
+- Grammar
+- Technical MCQs
+- Adaptive difficulty
+- Coding assessment
+- Technical interview
+- HR interview
+- Results
+
+The exact production contract must always reflect the implementation in the backend.
+
+---
+
+## Coding Assessment
+
+### POST `/api/coding/submit`
+
+**Authentication:** JWT required.
+
+**Purpose:** Submit candidate code for execution against the coding problem's test cases and return the resulting score and test-case results.
+
+**Request:**
+
+```json
+{
+  "code": "candidate source code",
+  "problemId": "coding problem id"
+}
+````
+
+**Processing:**
+
+1. Validate the authenticated user.
+2. Validate `code` and `problemId`.
+3. Load the requested coding problem.
+4. Load its test cases.
+5. Send candidate code and test-case input through the backend code-execution service.
+6. The code-execution service uses the currently configured execution provider.
+7. Normalize provider-specific execution results.
+8. Compare actual output with expected output.
+9. Calculate the number of passed test cases.
+10. Persist the coding assessment result.
+11. Return the normalized result to the frontend.
+
+The frontend must not communicate directly with the code-execution provider.
+
+### Current Code Execution Architecture
 
 ```text
-User Registration
-      ↓
-users
+Frontend
+    ↓
+POST /api/coding/submit
+    ↓
+codingController
+    ↓
+codeExecutionService
+    ↓
+JDoodle Provider
+    ↓
+JDoodle API
+```
 
-Resume Upload
-      ↓
-resumes
-      ↓
-Text Extraction
-      ↓
-Gemini Structured Extraction
-      ↓
-Stored Resume Analysis
+JDoodle is the current active code-execution provider.
 
-JD Submission
-      ↓
-jobDescriptions
-      ↓
-Gemini Structured Extraction
-      ↓
-Required/Preferred Skills
+Provider credentials and provider-specific API details remain backend-only.
 
-Resume + JD
-      ↓
-Deterministic Match Engine
-      ↓
-Match Score + Evidence
+### Provider Independence
+
+The coding API must remain provider-independent.
+
+The frontend and coding controller should not depend on provider-specific response formats.
+
+The backend provider layer normalizes execution results into a common internal structure:
+
+```json
+{
+  "executionSuccess": true,
+  "compileError": false,
+  "runtimeError": false,
+  "timedOut": false,
+  "stdout": "program output",
+  "stderr": "",
+  "compileOutput": "",
+  "providerError": null
+}
+```
+
+The exact internal provider result may evolve as implementation is finalized.
+
+A future Judge0 provider may implement the same normalized contract without requiring changes to the frontend coding API.
+
+### Response
+
+The coding endpoint should preserve the frontend-facing result structure:
+
+```json
+{
+  "success": true,
+  "data": {
+    "score": 3,
+    "total": 5,
+    "results": [
+      {
+        "passed": true,
+        "input": "input value",
+        "expected": "expected output",
+        "actual": "actual output",
+        "error": null
+      }
+    ]
+  }
+}
+```
+
+`score` represents the number of passed test cases.
+
+`total` represents the total number of test cases evaluated.
+
+`results` contains the result of each evaluated test case.
+
+The backend may include additional fields where they are actually implemented, but the frontend must not depend on provider-specific fields.
+
+### Error Handling
+
+The coding API should distinguish between:
+
+* Invalid request
+* Coding problem not found
+* Compilation failure
+* Runtime failure
+* Timeout
+* Code-execution provider failure
+* Server failure
+
+Provider-specific errors must be translated into a safe backend response.
+
+Provider credentials, raw provider authentication errors, and internal stack traces must not be exposed to the frontend.
+
+---
+
+## AI Interview Evaluation Schema
+
+**JSON Schema Contract for Phase 2 Interview Responses:**
+
+```json
+{
+  "technicalCorrectness": "Number (0-10)",
+  "relevance": "Number (0-10)",
+  "completeness": "Number (0-10)",
+  "communication": "Number (0-10)",
+  "overallScore": "Number (0-10)",
+  "strengths": ["Array of strings"],
+  "weaknesses": ["Array of strings"],
+  "feedback": "String",
+  "followUpQuestion": "String (optional)"
+}
+```
+
+This schema is strictly adhered to by the `InterviewResponse` MongoDB model and the Gemini extraction prompts. All Phase 2 evaluations must match this shape exactly.
+
+---
+
+## Results
+
+Phase 2 Results exposes raw per-stage scores.
+
+The Results API must not calculate the final readiness score during Phase 2.
+
+Expected stages include:
+
+* Vocabulary
+* Grammar
+* Technical MCQ
+* Coding
+* Technical Interview
+* HR Interview
+
+The frontend should display the values returned by the backend and must not fabricate missing scores.
+
+Readiness scoring belongs to Phase 3.
+
+---
+
+## Error Contract
+
+The backend should use a consistent JSON error structure once implemented, for example:
+
+```json
+{
+  "success": false,
+  "message": "Human-readable error",
+  "code": "ERROR_CODE"
+}
+```
+
+The exact production contract must reflect the code that is actually implemented.
+
 ```

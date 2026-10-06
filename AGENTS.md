@@ -1,12 +1,24 @@
 # CAREERREADY — ANTIGRAVITY DEVELOPMENT INSTRUCTIONS
 
-## 1. PROJECT
+## 1. PROJECT IDENTITY
 
 Project name: CareerReady
 
 Repository: SkillPlot
 
-CareerReady is an AI-powered adaptive career readiness and recruitment simulation platform.
+Repository owner/project workspace:
+
+```text
+VishalNarketpalli-ghub/SkillPlot
+```
+
+Developer's working branch:
+
+```text
+member-rohit
+```
+
+CareerReady is an AI-powered Adaptive Career Readiness & Recruitment Simulation Platform.
 
 The application is a **responsive web application**.
 
@@ -17,13 +29,11 @@ Primary technology stack:
 * Database: MongoDB Atlas + Mongoose
 * Authentication: JWT + bcrypt
 * AI: Google Gemini API
-* Coding execution: Judge0
+* Coding execution: JDoodle (current) with local Judge0 Docker planned as a future alternative provider
 * API testing: Postman
 * Version control: Git + GitHub
 
-The project is being developed by a team of four people.
-
-Team roles:
+The project is being developed by a team of four:
 
 * BL = Backend Lead
 * A = Intake / Assessment pair-lead
@@ -32,68 +42,130 @@ Team roles:
 
 ---
 
-# 2. DOCUMENT AUTHORITY
+# 2. PURPOSE OF THIS FILE
 
-Before doing any development work, read and understand ALL of these documents:
+This file defines **HOW development must be performed**.
 
-1. `docs/MASTER_PROJECT_PLAN.md`
-2. `docs/FRONTEND_DEVELOPMENT.md`
-3. `docs/BACKEND_DEVELOPMENT.md`
-4. `docs/API_DOCUMENTATION.md`
-5. `docs/DATABASE_DESIGN.md`
+It does NOT contain the detailed implementation plan for every project phase.
 
-These documents are the primary source of truth for the current project requirements.
+The actual requirements and daily tasks are defined in the relevant documents inside:
 
-The current documentation provided to this project covers **PHASE 1**.
+```text
+docs/
+```
 
-Do not invent additional Phase 1 requirements.
+Therefore:
 
-Do not silently change the architecture or task breakdown.
+```text
+AGENTS.md
+    = HOW to work
 
-Do not duplicate project requirements unnecessarily inside this file.
+Phase documentation
+    = WHAT to build
 
-This file defines **how development should be performed**.
+Repository
+    = WHAT has actually been built
+```
 
-The documentation defines **what should be built**.
-
-If documentation and the existing repository appear inconsistent, inspect the repository and report the discrepancy before making a major architectural decision.
-
----
-
-# 3. CURRENT DEVELOPMENT SCOPE
-
-The immediate development scope is:
-
-**PHASE 1 — FOUNDATION + CORE FLOW**
-
-Phase 1 consists of Days 1–12 as defined in the project documentation.
-
-The Phase 1 exit criteria are:
-
-A user must be able to:
-
-1. Register
-2. Log in
-3. Access protected routes
-4. Manage their profile
-5. Upload a resume
-6. Extract resume text
-7. Extract resume skills/education
-8. Enter or upload a Job Description
-9. Extract JD requirements
-10. Calculate a deterministic resume-to-JD match score
-11. See missing skills
-12. See a static role-based recruitment workflow
-
-Follow the exact daily task breakdown in the project documents.
-
-Do not begin Phase 2 or Phase 3 unless explicitly instructed.
+Do not duplicate the entire phase plans inside this file.
 
 ---
 
-# 4. DAILY EXECUTION RULE — CRITICAL
+# 3. DOCUMENT AUTHORITY
 
-Development MUST happen **one DAY at a time**.
+Before beginning work on any phase, read:
+
+1. `AGENTS.md`
+2. `docs/MASTER_PROJECT_PLAN.md`
+3. All relevant phase-specific development documents
+4. Relevant frontend/backend/API/database documentation
+
+Expected project documentation may include:
+
+```text
+docs/
+├── MASTER_PROJECT_PLAN.md
+├── FRONTEND_DEVELOPMENT.md
+├── BACKEND_DEVELOPMENT.md
+├── API_DOCUMENTATION.md
+├── DATABASE_DESIGN.md
+├── PHASE1_DEVELOPMENT.md
+├── PHASE2_DEVELOPMENT.md
+└── PHASE3_DEVELOPMENT.md
+```
+
+Not all phase-specific files may exist at the same time.
+
+Only use phase documents that actually exist in the repository.
+
+The current phase is determined by the developer's explicit instruction.
+
+For example:
+
+```text
+START PHASE 1
+START PHASE 2
+START PHASE 3
+```
+
+When a phase is started:
+
+1. Locate the documentation for that phase.
+2. Read the complete phase documentation.
+3. Understand the entire phase before implementing the current day.
+4. Follow the documented day-by-day task breakdown.
+
+The documentation is the source of truth for **what must be built**.
+
+Do not silently invent requirements.
+
+Do not silently remove requirements.
+
+Do not replace documented architecture with a different architecture without discussing it with the developer.
+
+If documentation and the existing implementation conflict, identify the discrepancy before making a major change.
+
+---
+
+# 4. PHASE CONTROL
+
+The project has three phases.
+
+Do not start a phase unless the developer explicitly instructs you to do so.
+
+Examples:
+
+```text
+START PHASE 1
+START PHASE 2
+START PHASE 3
+```
+
+Once a phase has started, work only within that phase.
+
+Do NOT automatically start the next phase after completing the current phase.
+
+The developer decides when to transition.
+
+For example:
+
+```text
+PHASE 1 COMPLETE
+        ↓
+WAIT
+        ↓
+Developer says START PHASE 2
+        ↓
+Begin Phase 2
+```
+
+Never assume permission to continue.
+
+---
+
+# 5. DAILY EXECUTION RULE — CRITICAL
+
+Every phase is divided into daily tasks.
 
 Each day contains tasks for:
 
@@ -102,15 +174,15 @@ Each day contains tasks for:
 * B
 * C
 
-When the developer instructs:
+When the developer says:
 
 ```text
 START DAY X
 ```
 
-complete the tasks for **ALL FOUR ROLES for that day** according to the documentation.
+complete the tasks assigned to **ALL FOUR ROLES for that day** according to the current phase documentation.
 
-For example:
+Example:
 
 ```text
 START DAY 1
@@ -118,56 +190,116 @@ START DAY 1
 
 means:
 
-1. Complete BL — Day 1 tasks
-2. Complete A — Day 1 tasks
-3. Complete B — Day 1 tasks
-4. Complete C — Day 1 tasks
-5. Integrate the work where necessary
-6. Test the completed work
-7. Report the day's results
-8. STOP
+1. Complete BL's Day 1 tasks.
+2. Complete A's Day 1 tasks.
+3. Complete B's Day 1 tasks.
+4. Complete C's Day 1 tasks.
+5. Integrate the work where necessary.
+6. Test the completed work.
+7. Report the day's results.
+8. STOP.
 
-Do NOT automatically begin Day 2.
+Do NOT automatically start Day 2.
 
-After completing a day, wait for an explicit command:
+Wait for:
 
 ```text
 START DAY 2
 ```
 
-The same rule applies to every day.
+The same rule applies to every day of every phase.
 
-Never automatically progress from one day to the next.
-
-The developer controls progression.
+The developer controls daily progression.
 
 ---
 
-# 5. BEFORE STARTING IMPLEMENTATION
+# 6. DAY NUMBERING
+
+Day numbers are relative to the current phase.
+
+For example:
+
+```text
+PHASE 1
+Day 1
+Day 2
+...
+Day 12
+```
+
+and:
+
+```text
+PHASE 2
+Day 1
+Day 2
+...
+Day 28
+```
+
+These are separate phase schedules.
+
+Always identify the current phase together with the day.
+
+Use:
+
+```text
+PHASE 1 — DAY 5
+```
+
+rather than simply:
+
+```text
+DAY 5
+```
+
+when reporting progress.
+
+---
+
+# 7. BEFORE IMPLEMENTING A DAY
 
 Before writing application code:
 
 1. Read `AGENTS.md`.
-2. Read all five documents in `docs/`.
-3. Inspect the existing repository.
-4. Inspect the existing frontend.
-5. Inspect the existing backend.
-6. Check the current Git branch.
-7. Check Git status.
-8. Check `.gitignore`.
-9. Check whether `.env.example` exists.
-10. Check whether `.env` exists.
-11. Identify existing functionality before creating new functionality.
+2. Read the relevant project documentation.
+3. Read the complete current phase plan.
+4. Locate the current day's tasks.
+5. Inspect the existing repository.
+6. Inspect the existing frontend.
+7. Inspect the existing backend.
+8. Check existing routes.
+9. Check existing models.
+10. Check existing services/components.
+11. Check the current Git branch.
+12. Check Git status.
+13. Check `.gitignore`.
+14. Check `.env.example`.
+15. Determine what already exists before creating new functionality.
 
-Do not recreate files or functionality that already exists without checking first.
+Do not recreate existing functionality without checking first.
 
-Before implementing a significant task, explain:
+Before making significant changes, explain:
 
-* WHAT will be created/changed
-* WHERE it will be created/changed
-* WHY it is required
-* HOW it will work
-* HOW it will be tested
+### WHAT
+
+What will be created or changed?
+
+### WHERE
+
+Which files/directories will be affected?
+
+### WHY
+
+Why is the change required by the current task?
+
+### HOW
+
+How will the implementation work?
+
+### TEST
+
+How will the implementation be verified?
 
 Then implement incrementally.
 
@@ -175,34 +307,114 @@ Do not dump an entire phase worth of code at once.
 
 ---
 
-# 6. CODE COMMENTS AND TEAM UNDERSTANDING
+# 7. CODE EXECUTION PROVIDER RULES
+
+The current active code-execution provider is JDoodle.
+
+JDoodle is responsible for executing submitted code through the backend code-execution service/provider boundary.
+
+The application must distinguish at minimum between:
+
+- Successful execution
+- Compilation error
+- Runtime error
+- Timeout
+- Invalid submission/request
+- Code-execution provider failure
+
+Do not treat every code-execution provider failure as a wrong coding answer.
+
+The coding controller and frontend must remain provider-agnostic.
+
+Provider-specific request/response handling belongs inside the provider/service layer.
+
+Current architecture:
+
+```text
+codingController
+    ↓
+codeExecutionService
+    ↓
+jdoodleProvider
+    ↓
+JDoodle API
+```
+
+Future architecture may support:
+
+```text
+codeExecutionService
+    ↓
+provider selector
+    ├── JDoodle
+    └── Judge0
+          ↓
+       Local Docker
+```
+
+Local Judge0 Docker is future/planned work.
+
+Do NOT implement the Judge0 provider or Docker infrastructure unless the developer explicitly instructs you to do so.
+
+Keep JDoodle credentials in `.env`.
+
+Expected credential variables:
+
+```text
+JDOODLE_CLIENT_ID
+JDOODLE_CLIENT_SECRET
+```
+
+Never hardcode API credentials.
+
+Never expose API credentials in:
+
+* frontend code
+* source files
+* comments
+* logs
+* screenshots
+* API responses
+* Git history
+
+Do not expose actual credential values in reports.
+
+Provider-specific secrets must remain backend-only.
+
+The frontend must communicate only with the backend coding API.
+
+The frontend must never call JDoodle directly.
+
+---
+
+# 8. CODE COMMENTS
 
 The codebase must be understandable by all four team members.
 
-When creating code, add **useful comments for non-obvious logic**.
+When creating or modifying code, add **useful comments for non-obvious logic**.
 
-Comments should be used where they help explain:
+Comments should explain things such as:
 
 * Business rules
-* Complex logic
+* Complex algorithms
 * Authentication/security decisions
 * AI prompt/schema decisions
 * Data transformations
-* Algorithms
 * Integration behavior
 * Important assumptions
-* Non-obvious edge cases
+* Edge cases
+* Non-obvious implementation decisions
 
-Do NOT add meaningless comments to obvious lines.
+Do NOT add meaningless comments to obvious code.
 
-Example of a poor comment:
+Bad:
 
 ```js
 // Create user
 const user = new User(data);
 ```
 
-Example of a useful comment:
+Good:
 
 ```js
 // Hash the password before persistence.
@@ -210,20 +422,20 @@ Example of a useful comment:
 const hashedPassword = await bcrypt.hash(password, 10);
 ```
 
-The goal is readable, maintainable code that another team member can understand without the original developer being present.
+Comments must improve understanding rather than create noise.
 
 ---
 
-# 7. ENVIRONMENT VARIABLES AND SECRETS
+# 9. ENVIRONMENT VARIABLES AND SECRETS
 
 Never hard-code:
 
 * API keys
 * Database credentials
 * JWT secrets
-* Private tokens
 * Passwords
-* Environment-specific secrets
+* Private tokens
+* Environment-specific credentials
 
 Use environment variables.
 
@@ -235,11 +447,19 @@ Maintain:
 
 as the safe configuration template.
 
-Whenever implementation requires a new environment variable:
+The real configuration belongs in:
 
-1. Add the variable name to `.env.example`.
-2. Explain what it is used for.
-3. Use a safe placeholder/example value.
+```text
+.env
+```
+
+The `.env` file must NOT be committed to GitHub.
+
+Whenever a new environment variable is required:
+
+1. Add its variable name to `.env.example`.
+2. Add a safe placeholder.
+3. Explain what it is used for.
 4. Tell the developer what real value must be placed in `.env`.
 5. Verify `.env` is ignored by Git.
 
@@ -250,140 +470,86 @@ PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 GEMINI_API_KEY=your_gemini_api_key
-JUDGE0_API_URL=your_judge0_api_url
+JDOODLE_CLIENT_ID=your_jdoodle_client_id
+JDOODLE_CLIENT_SECRET=your_jdoodle_client_secret
 ```
 
-Never generate or invent real credentials.
+Never invent real credentials.
 
-Never place real credentials in:
+Never expose actual secret values in reports.
 
-* Source code
-* Documentation
-* `AGENTS.md`
-* `.env.example`
-* Git commits
-* GitHub
-
-The real values belong only in the developer's local `.env`.
+When reporting environment configuration, report only variable names.
 
 ---
 
-# 8. GIT AND GITHUB RULES — CRITICAL
+# 10. GIT / GITHUB RULES — CRITICAL
 
 The project is connected to GitHub.
 
-The developer's working branch is:
+Repository:
+
+```text
+VishalNarketpalli-ghub/SkillPlot
+```
+
+Developer's branch:
 
 ```text
 member-rohit
 ```
 
-GitHub repository:
-
-```text
-https://github.com/VishalNarketpalli-ghub/SkillPlot
-```
-
-The branch to use for the developer's work is:
+All GitHub work performed for this developer must use:
 
 ```text
 member-rohit
 ```
 
-## DO NOT AUTOMATICALLY COMMIT
+## NO AUTOMATIC COMMITS
 
-Do NOT create a Git commit after every task.
+Do NOT automatically commit:
 
-Do NOT create a Git commit after every file.
+* after every file
+* after every task
+* after every role
+* after every day
+* after every successful test
 
-Do NOT create a Git commit after every day.
+Completing a task does NOT mean a Git commit should be created.
 
-Do NOT push automatically after completing work.
+Do not automatically push to GitHub.
 
-Development and Git operations are separate.
+After completing work, report the Git status instead.
 
-After completing a task/day:
+---
 
-* Show the changes made.
-* Show the relevant Git status if useful.
-* Do NOT automatically commit or push.
+# 11. COMMIT RULE
 
-Only create a commit when the developer explicitly requests it.
+Only create a Git commit when the developer explicitly asks.
 
-For example:
+Examples:
 
 ```text
 COMMIT DAY 1
 ```
 
-or:
-
 ```text
 COMMIT THESE CHANGES
 ```
 
----
+Before committing:
 
-# 9. GITHUB BRANCH SAFETY
-
-All GitHub operations initiated for this developer must use:
-
-```text
-member-rohit
-```
-
-Never push directly to:
-
-```text
-main
-develop
-```
-
-Never push to another team member's branch.
-
-Never switch to another developer's branch unless explicitly instructed.
-
-Never create a merge commit into another branch without explicit permission.
-
-Never merge or create a pull request unless explicitly instructed.
-
-Never force-push.
-
-Never use destructive commands such as:
-
-```text
-git reset --hard
-git clean -fd
-git push --force
-```
-
-unless the developer explicitly authorizes the specific operation.
-
-Before any push, verify:
-
-```text
-Current branch = member-rohit
-```
-
-If the current branch is not `member-rohit`, STOP and inform the developer.
-
----
-
-# 10. COMMIT RULES
-
-Only commit when explicitly instructed.
-
-When asked to commit:
-
-1. Check `git status`.
+1. Run `git status`.
 2. Review changed files.
-3. Make sure `.env` and secrets are not included.
-4. Make sure generated/unwanted files are not included.
-5. Verify the current branch is `member-rohit`.
-6. Create a meaningful commit.
-7. Report the commit hash/message.
+3. Check for `.env`.
+4. Check for secrets.
+5. Check for `node_modules`.
+6. Check for build artifacts.
+7. Check for unwanted generated files.
+8. Verify the current branch is `member-rohit`.
+9. Create a meaningful commit.
+10. Report the commit message and hash.
 
-Preferred commit format:
+Preferred commit style:
 
 ```text
 feat(auth): add user registration
@@ -397,9 +563,9 @@ Do not create unnecessary commits.
 
 ---
 
-# 11. PUSH RULES
+# 12. PUSH RULE
 
-Only push when the developer explicitly asks.
+Only push to GitHub when the developer explicitly asks.
 
 Example:
 
@@ -410,43 +576,76 @@ PUSH TO MY BRANCH
 Before pushing:
 
 1. Verify the current branch.
-2. Verify it is `member-rohit`.
+2. The current branch MUST be:
+
+```text
+member-rohit
+```
+
 3. Check for secrets.
 4. Check Git status.
 5. Push only to `member-rohit`.
 
-Never assume that completing a task means it should be pushed.
+Never push automatically.
 
----
-
-# 12. AI DEVELOPMENT RULES
-
-Use Gemini only where the project documentation specifies AI functionality.
-
-Do not use AI to replace deterministic business logic that is explicitly required to remain deterministic.
-
-For structured AI output:
-
-1. Define the expected schema.
-2. Request structured output where supported.
-3. Validate the response.
-4. Handle malformed output.
-5. Do not blindly trust model output.
-6. Keep reusable prompts/schema logic centralized where practical.
-
-AI-generated content must not directly compromise database integrity or application state.
-
----
-
-# 13. BACKEND DEVELOPMENT RULES
-
-Follow the backend architecture documented in:
+Never push to:
 
 ```text
-docs/BACKEND_DEVELOPMENT.md
-docs/API_DOCUMENTATION.md
-docs/DATABASE_DESIGN.md
+main
+develop
 ```
+
+Never push to another team member's branch.
+
+Never merge branches unless explicitly instructed.
+
+Never create a pull request unless explicitly instructed.
+
+Never force-push.
+
+Do not use destructive Git commands unless the developer explicitly authorizes the exact operation.
+
+Examples of destructive commands requiring explicit authorization:
+
+```text
+git reset --hard
+git clean -fd
+git push --force
+```
+
+If the current branch is not `member-rohit` when a push is requested:
+
+**STOP and inform the developer.**
+
+---
+
+# 13. FRONTEND RULES
+
+The application is a **responsive web application**.
+
+Do NOT create a separate mobile application.
+
+Follow the frontend architecture defined by the project documentation.
+
+Prefer:
+
+* Reusable components
+* Consistent design system
+* Centralized API communication
+* Clear state management
+* Proper loading states
+* Proper error states
+* Responsive layouts
+
+Do not duplicate UI logic unnecessarily.
+
+Do not rewrite working components merely for stylistic preference.
+
+---
+
+# 14. BACKEND RULES
+
+Follow the backend architecture defined by the project documentation.
 
 Prefer separation between:
 
@@ -462,48 +661,95 @@ validators
 config
 ```
 
-Do not place large amounts of business logic directly inside routes.
+Routes should not contain large amounts of business logic.
 
-Reuse existing services/utilities where appropriate.
+Controllers should coordinate request/response behavior.
 
-Do not introduce a new architectural pattern without a clear reason.
+Services should contain reusable business logic.
 
----
+Models should define database structures.
 
-# 14. FRONTEND DEVELOPMENT RULES
+Middleware should handle cross-cutting concerns.
 
-Follow:
+AI prompts and schemas should be reusable where appropriate.
 
-```text
-docs/FRONTEND_DEVELOPMENT.md
-```
-
-Use reusable components.
-
-Avoid unnecessary duplication.
-
-Keep API communication organized.
-
-Maintain responsive web behavior.
-
-Do NOT create a separate mobile application.
+Do not introduce unnecessary architectural complexity.
 
 ---
 
-# 15. TESTING RULE
+# 15. AI VS DETERMINISTIC LOGIC
 
-Every completed task must be reasonably tested.
+Respect the AI/deterministic boundaries defined by the current phase documentation.
 
-Backend testing may include:
+Do not use AI to replace deterministic business logic when the project specification explicitly requires deterministic calculation.
+
+AI may be used for tasks such as:
+
+* Natural-language understanding
+* Information extraction
+* Question generation
+* Interview generation
+* Interview evaluation
+* Explanatory text
+* Roadmap explanations
+
+Deterministic application logic should remain responsible for calculations and business rules explicitly defined as deterministic.
+
+Do not allow AI output to directly compromise database integrity.
+
+---
+
+# 16. STRUCTURED AI OUTPUT
+
+Whenever an AI feature requires structured output:
+
+1. Define the expected schema.
+2. Keep the schema consistent.
+3. Use structured output where supported.
+4. Validate the returned data.
+5. Handle malformed responses.
+6. Handle missing fields.
+7. Handle invalid score ranges.
+8. Handle API failures.
+9. Keep prompts/schema definitions reusable.
+10. Do not blindly trust model output.
+
+If multiple AI features use related schemas, ensure field names, data types, and score ranges remain consistent.
+
+Do not independently invent incompatible schemas for different features.
+
+---
+
+# 17. TESTING RULE
+
+Every completed task must be tested.
+
+Do not claim that functionality works merely because:
+
+* The file exists
+* The function exists
+* The server compiles
+* The frontend renders
+* The API returns a response once
+
+Test the actual behavior.
+
+### Backend
+
+Where applicable, test:
 
 * Server startup
-* Endpoint testing
+* Endpoint behavior
 * Validation
 * Authentication
+* Authorization
 * Database operations
 * Error handling
+* External API integrations
 
-Frontend testing may include:
+### Frontend
+
+Where applicable, test:
 
 * Rendering
 * Navigation
@@ -514,7 +760,9 @@ Frontend testing may include:
 * Error states
 * Responsive behavior
 
-Integration testing should verify relevant connections such as:
+### Integration
+
+Test relevant flows such as:
 
 ```text
 Frontend
@@ -532,68 +780,172 @@ Backend
 Gemini
 ```
 
-Do not claim something is working without testing it.
+or:
+
+```text
+Backend
+    ↓
+Judge0
+```
 
 ---
 
-# 16. ERROR PROTOCOL — CRITICAL
+# 18. TEST WITH REALISTIC SAMPLE DATA
+
+When a task requires functional testing, use realistic fictional sample data.
+
+Do not use real people's private information.
+
+For example:
+
+```text
+Name:
+CareerReady Test User
+
+Email:
+testuser@careerready.local
+```
+
+Use realistic fictional resumes, JDs, interview answers, coding submissions, and assessment responses where required.
+
+Testing should exercise the actual application flow rather than only isolated functions when an end-to-end test is appropriate.
+
+---
+
+# 19. ERROR PROTOCOL — CRITICAL
 
 If an error occurs:
 
 **STOP DEVELOPMENT PROGRESSION.**
 
-Do not move to another task simply because it is unrelated.
+Do not continue to another task while ignoring the error.
 
-Instead:
+First:
 
 1. Identify the error.
-2. Explain the root cause.
-3. Identify the affected file/component.
-4. Explain the fix.
-5. Apply the fix when appropriate.
-6. Test again.
-7. Report the result.
+2. Determine the likely root cause.
+3. Identify the affected file/component/service.
+4. Explain the cause.
+5. Explain the fix.
+6. Apply the fix when appropriate.
+7. Test the fix.
+8. Report the result.
 
-If the issue cannot be confidently resolved, stop and ask the developer for the required information.
+If the issue cannot be confidently resolved:
 
-Do not hide errors.
+STOP and ask the developer for the required information.
 
-Do not work around an error without explaining the trade-off.
+Never hide errors.
+
+Never claim success when an important test is failing.
 
 ---
 
-# 17. DAILY COMPLETION REPORT
+# 20. SCOPE CONTROL
 
-After completing all tasks for the current day, provide:
+Work only on the tasks defined for the current phase and current day.
 
-## Day
+Do not add unrelated features.
+
+Do not introduce optional features simply because there is available development time.
+
+If a new feature is proposed:
+
+1. Explain what it requires.
+2. Estimate its impact.
+3. Identify which CORE task would be delayed, reduced, or removed.
+4. Wait for explicit developer approval.
+
+No feature is considered "free".
+
+Do not sacrifice core functionality for optional features without explicit approval.
+
+---
+
+# 21. CHECKPOINTS AND BUFFERS
+
+If the current phase documentation defines:
+
+* Checkpoints
+* Buffer days
+* Integration days
+* Sign-off days
+* Regression testing
+* Reliability testing
+
+they must be preserved.
+
+Do not silently remove a buffer day.
+
+Do not convert a checkpoint into normal feature development.
+
+Do not skip an integration test because individual components appear to work.
+
+If a checkpoint fails:
+
+1. Report the failure.
+2. Identify the blocking issues.
+3. Prioritize the fixes.
+4. Do not blindly continue to the next stage.
+
+---
+
+# 22. DOCUMENTATION RULE
+
+Documentation must reflect what is **actually implemented**.
+
+Never mark future functionality as completed.
+
+Never fabricate:
+
+* APIs
+* Database fields
+* Features
+* Test results
+* Architecture
+* Configuration
+* AI behavior
+
+When implementation changes documented behavior, update the appropriate documentation when required.
+
+When completing documentation tasks, document what was actually built rather than what was originally planned if there were deviations.
+
+---
+
+# 23. DAILY COMPLETION REPORT
+
+At the end of every day, provide a report.
+
+Use:
 
 ```text
-PHASE 1 — DAY X
+PHASE X — DAY Y
 ```
+
+Then:
 
 ## BL
 
 * Completed tasks
-* Files changed
+* Files created/changed
 * Tests performed
 
 ## A
 
 * Completed tasks
-* Files changed
+* Files created/changed
 * Tests performed
 
 ## B
 
 * Completed tasks
-* Files changed
+* Files created/changed
 * Tests performed
 
 ## C
 
 * Completed tasks
-* Files changed
+* Files created/changed
 * Tests performed
 
 ## Integration
@@ -603,13 +955,19 @@ PHASE 1 — DAY X
 
 ## Environment Variables
 
-List any new variables added to `.env.example`.
+List only variable names that were added/required.
 
-## Git Status
+Do not reveal values.
 
-Report relevant Git status.
+## Git
 
-Do NOT commit or push unless explicitly instructed.
+Report:
+
+* Current branch
+* Working-tree status
+* Relevant changed files
+
+Do not commit or push unless explicitly instructed.
 
 ## Issues
 
@@ -620,69 +978,45 @@ List unresolved issues.
 End with:
 
 ```text
-DAY X COMPLETE
-WAITING FOR COMMAND TO START DAY X+1
+DAY Y COMPLETE
+WAITING FOR COMMAND TO START THE NEXT DAY
 ```
 
-Do not proceed automatically.
+Then STOP.
 
 ---
 
-# 18. PHASE 1 CHECKPOINTS
+# 24. PHASE COMPLETION REPORT
 
-## Day 3 Checkpoint
+When the final day of a phase is completed, do NOT automatically begin the next phase.
 
-Authentication should work end-to-end.
+Perform the phase's documented sign-off activities.
 
-## Day 8 Checkpoint
-
-The complete Phase 1 flow should be integration-tested:
+Then report:
 
 ```text
-Register
-→ Login
-→ Upload Resume
-→ Enter JD
-→ Resume/JD Analysis
-→ Match Score
-→ Missing Skills
-→ Static Workflow
+PHASE X COMPLETE
 ```
 
-If a checkpoint fails, prioritize fixing it before proceeding.
+Include:
+
+* Exit criteria status
+* Features implemented
+* Integration status
+* Testing status
+* Known issues
+* Documentation status
+* Git status
+* Environment requirements
+* Recommended next step
+
+Then STOP.
+
+Wait for the developer to explicitly start the next phase.
 
 ---
 
-# 19. SCOPE CONTROL
-
-Do not add functionality outside the current documented task.
-
-If an additional feature is suggested:
-
-1. Identify the feature.
-2. Estimate the implementation impact.
-3. Explain what core task would be delayed or removed.
-4. Wait for explicit approval.
-
-Do not treat optional features as free additions.
-
-Do not expand scope without approval.
-
----
-
-# 20. DOCUMENTATION RULE
-
-Documentation must reflect what is actually implemented.
-
-Do not mark future functionality as completed.
-
-Do not fabricate API endpoints, database fields, features, or implementation details.
-
-When a task changes an API or database schema, update the relevant documentation when required by the project plan.
-
----
-
-# 21. CONTEXT REFRESH COMMAND
+# 25. CONTEXT REFRESH COMMAND
 
 If the developer says:
 
@@ -690,98 +1024,137 @@ If the developer says:
 REFRESH CONTEXT
 ```
 
-Immediately stop development.
+immediately stop development.
 
 Do not write code.
 
-Provide a concise state summary containing:
+Provide a concise project-state summary containing:
 
 1. Current phase
 2. Current day
-3. Completed tasks
+3. Completed days/tasks
 4. Current implementation state
-5. Files changed
+5. Files created/modified
 6. Pending tasks
 7. Known issues
 8. Environment variables/configuration required
-9. Git branch/status
-10. Next task
+9. Current Git branch
+10. Git working-tree status
+11. Next task
 
-Then wait for further instructions.
+Then STOP and wait.
 
 ---
 
-# 22. FIRST REPOSITORY ACTION
+# 26. FIRST ACTION WHEN OPENING THE PROJECT
 
-When this project is opened for the first time:
+When first opening the project or when the developer asks you to initialize/re-understand the project:
 
-DO NOT immediately write application code.
+Do NOT immediately write application code.
 
 First:
 
-1. Read this `AGENTS.md`.
-2. Read all five documents in `docs/`.
-3. Inspect the repository.
-4. Inspect frontend/backend structure.
-5. Check Git status.
-6. Check the current branch.
-7. Check `.gitignore`.
-8. Check `.env.example`.
-9. Identify what already exists.
-10. Identify what is missing.
+1. Read `AGENTS.md`.
+2. Read `docs/MASTER_PROJECT_PLAN.md`.
+3. Identify the current phase.
+4. Read the documentation for that phase.
+5. Inspect the repository.
+6. Inspect frontend/backend structure.
+7. Check the current Git branch.
+8. Check Git status.
+9. Check `.gitignore`.
+10. Check `.env.example`.
+11. Identify existing functionality.
+12. Identify missing prerequisites.
 
 Then report:
 
 ```text
 PROJECT UNDERSTANDING
-REPOSITORY STATE
-CURRENT BRANCH
 CURRENT PHASE
 CURRENT DAY
+REPOSITORY STATE
+CURRENT GIT BRANCH
 DOCUMENTS READ
-DAY TASKS
-FILES THAT MAY NEED TO BE CREATED/CHANGED
+CURRENT PHASE OBJECTIVE
+CURRENT DAY TASKS
+FILES LIKELY TO CHANGE
 ENVIRONMENT VARIABLES REQUIRED
+POTENTIAL RISKS/BLOCKERS
 FIRST IMPLEMENTATION STEP
 ```
 
-Do not begin implementation until the developer explicitly starts the work.
+Do not modify application code during this initial inspection.
+
+Wait for the developer's explicit command.
 
 ---
 
-# 23. DEVELOPMENT COMMANDS
+# 27. DEVELOPMENT COMMANDS
 
 The developer controls execution.
 
-Examples:
+## Start a phase
 
 ```text
 START PHASE 1
 ```
 
-Begin Phase 1 according to the documentation.
+or:
 
 ```text
-START DAY 1
+START PHASE 2
 ```
 
-Execute all Day 1 tasks for BL, A, B, and C.
-
-Then stop.
+or:
 
 ```text
-START DAY 2
+START PHASE 3
 ```
 
-Execute all Day 2 tasks for BL, A, B, and C.
+Read the relevant phase documentation and report your understanding before implementation if this is the first time entering that phase.
 
-Then stop.
+## Start a day
 
 ```text
-COMMIT DAY 1
+START DAY X
 ```
 
-Commit the requested changes after verifying the branch and files.
+Execute ALL four roles for the current phase's Day X:
+
+```text
+BL
+A
+B
+C
+```
+
+Then:
+
+```text
+Integrate
+Test
+Report
+STOP
+```
+
+Never automatically continue.
+
+## Commit
+
+```text
+COMMIT THESE CHANGES
+```
+
+or:
+
+```text
+COMMIT DAY X
+```
+
+Commit only after checking the branch and files.
+
+## Push
 
 ```text
 PUSH TO MY BRANCH
@@ -793,30 +1166,205 @@ Push only to:
 member-rohit
 ```
 
+## Refresh context
+
 ```text
 REFRESH CONTEXT
 ```
 
-Stop development and provide the current project-state summary.
+Stop and provide the current project-state summary.
 
 ---
 
-# 24. FINAL DEVELOPMENT PRINCIPLE
+# 28. IMPORTANT GIT SAFETY REMINDER
 
-Build the project incrementally and carefully.
+The developer's branch is:
+
+```text
+member-rohit
+```
+
+Never assume that the currently checked-out branch is safe.
+
+Before any requested Git push:
+
+```text
+CHECK CURRENT BRANCH
+        ↓
+Must equal member-rohit
+        ↓
+Check for secrets
+        ↓
+Check Git status
+        ↓
+Push only to member-rohit
+```
+
+If any condition fails:
+
+**STOP.**
+
+---
+
+# 29. FINAL DEVELOPMENT PRINCIPLE
+
+Build CareerReady incrementally.
 
 Prioritize:
 
 * Correctness
+* Security
 * Understandability
 * Maintainability
 * Testability
 * Team collaboration
 * Clear architecture
-* Secure configuration
+* Reliable integrations
+* Explainable AI behavior
 * Controlled Git workflow
 * Scope discipline
 
-Do not optimize for writing the largest amount of code.
+Do not optimize for the amount of code written.
 
-The objective is to create a codebase that all four team members can understand, test, maintain, and continue developing.
+Optimize for a working, understandable, testable system that all four team members can continue developing.
+
+The developer controls:
+
+* Phase progression
+* Day progression
+* Feature additions
+* Commits
+* GitHub pushes
+* Branch operations
+* Final sign-off
+
+# CODE DOCUMENTATION AND COMMENTS — CRITICAL
+
+The codebase must be understandable to all four team members.
+
+Whenever creating or modifying code, add useful explanatory comments for logic that is not immediately obvious from the code itself.
+
+Comments must explain the reasoning, purpose, or behavior of the code rather than merely restating the syntax.
+
+## What comments should explain
+
+Add comments when appropriate for:
+
+* Business rules
+* Complex algorithms
+* Non-obvious control flow
+* Authentication and security decisions
+* Data transformations
+* Database operations with important assumptions
+* API integration behavior
+* Gemini/API prompt decisions
+* Structured AI output schemas
+* AI response validation
+* Error handling decisions
+* Code-execution provider behavior (JDoodle / future Judge0 Docker)
+* Adaptive assessment logic
+* Scoring calculations
+* Important state-management decisions
+* Edge cases
+* Fallback behavior
+* Important architectural decisions
+* Workarounds for external API limitations
+* Any implementation detail that another developer would need to understand when maintaining the code
+
+## Comment quality
+
+Comments should answer questions such as:
+
+* Why is this being done?
+* Why was this approach chosen?
+* What important rule is being enforced?
+* What assumption does this code depend on?
+* What happens in an important edge case?
+* Why is this validation necessary?
+* Why must this operation happen before another operation?
+
+Avoid comments that simply describe obvious syntax.
+
+Bad:
+
+```js
+// Create user
+const user = new User(data);
+```
+
+Bad:
+
+```js
+// Loop through questions
+questions.forEach(...)
+```
+
+Good:
+
+```js
+// Never persist the raw password.
+// Authentication later depends on comparing the submitted password
+// against this bcrypt hash.
+const hashedPassword = await bcrypt.hash(password, 10);
+```
+
+Good:
+
+```js
+// Keep the follow-up count bounded to one so the interview
+// remains adaptive without allowing the AI to generate an
+// unbounded conversational loop.
+if (followUpCount >= 1) {
+    return null;
+}
+```
+
+## Existing code audit
+
+When entering a new phase, inspect the existing implementation relevant to the current work.
+
+If previously written code contains important non-obvious logic but lacks useful explanatory comments:
+
+1. Identify the missing documentation.
+2. Add concise explanatory comments.
+3. Do not rewrite working logic merely to add comments.
+4. Do not add comments to every line.
+5. Preserve existing behavior.
+6. Test the affected functionality after making the documentation changes.
+
+Existing code does NOT need to be fully rewritten or commented line-by-line.
+
+The goal is to make important logic understandable, not to maximize the number of comments.
+
+## New code requirement
+
+Every new or substantially modified non-trivial function, service, controller, model, component, utility, algorithm, AI prompt/schema, or integration must be reviewed for whether an explanatory comment is needed.
+
+If the implementation contains a non-obvious decision, document that decision close to the relevant code.
+
+## AI-specific requirement
+
+For AI-related code, comments should explain important decisions such as:
+
+* What the prompt is intended to achieve
+* Why a particular schema exists
+* Why a field is required
+* Why validation is performed
+* Why malformed AI output is handled in a particular way
+* Why deterministic logic is kept outside the AI
+* Why a retry/fallback mechanism exists
+
+Do NOT place sensitive information, API keys, credentials, tokens, or private user data inside comments.
+
+## Documentation standard
+
+Comments are part of maintainability.
+
+A future team member should be able to understand the important reasoning behind the implementation without having to reverse-engineer every non-obvious section of the code.
+
+Prioritize:
+
+Correctness → Clarity → Maintainability → Concise comments
+
+Do not optimize for comment quantity.
+Optimize for useful explanation.

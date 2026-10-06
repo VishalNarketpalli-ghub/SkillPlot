@@ -11,6 +11,13 @@ import { Profile } from './routes/Profile';
 import { Resume } from './routes/Resume';
 import { JobDescription } from './routes/JobDescription';
 import { Analysis } from './routes/Analysis';
+import { VocabularyAssessment } from './screens/VocabularyAssessment';
+import { GrammarAssessment } from './screens/GrammarAssessment';
+import { TechnicalMCQ } from './screens/TechnicalMCQ';
+import { CodingAssessment } from './screens/CodingAssessment';
+import { TechnicalInterview } from './screens/TechnicalInterview';
+import { HRInterview } from './screens/HRInterview';
+import { Results } from './screens/Results';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +35,13 @@ const router = createBrowserRouter([
           { path: 'resume', element: <Resume /> },
           { path: 'job-description', element: <JobDescription /> },
           { path: 'analysis', element: <Analysis /> },
+          { path: 'vocabulary', element: <VocabularyAssessment /> },
+          { path: 'grammar', element: <GrammarAssessment /> },
+          { path: 'mcq', element: <TechnicalMCQ /> },
+          { path: 'coding', element: <CodingAssessment /> },
+          { path: 'interview/technical', element: <TechnicalInterview /> },
+          { path: 'interview/hr', element: <HRInterview /> },
+          { path: 'results', element: <Results /> },
         ]
       }
     ],

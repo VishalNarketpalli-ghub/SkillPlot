@@ -2,7 +2,7 @@ import Resume from '../models/Resume.js';
 import User from '../models/User.js';
 import fs from 'fs';
 import pdfParse from 'pdf-parse';
-import { generateStructuredOutput } from '../utils/gemini.js';
+import { generateStructuredOutput } from '../providers/aiProvider.js';
 
 export const uploadResume = async (req, res, next) => {
   try {
@@ -33,7 +33,10 @@ export const uploadResume = async (req, res, next) => {
       structuredData = await generateStructuredOutput(prompt, schema);
     } catch (parseError) {
       console.error("Parse Error:", parseError);
-      // We continue even if parsing fails, just without the data
+      // WHY: We continue even if AI extraction fails. 
+      // The application allows users to manually upload a resume as a baseline file 
+      // even if text extraction or AI provider mapping encounters an error.
+      // This prevents a hard block on the core user flow.
     }
 
     const resume = await Resume.create({

@@ -22,6 +22,11 @@ export const getMatchScore = async (req, res, next) => {
     const preferredSkills = (jd.preferredSkills || []).map(s => s.toLowerCase().trim());
     
     // Deterministic match: keyword overlap
+    // WHY: We explicitly avoid using Gemini/LLMs for the match score because 
+    // LLMs are prone to hallucination and inconsistent subjective scoring.
+    // By reducing both the Resume and JD to structured skill arrays first (via AI),
+    // we can enforce a strict deterministic overlap calculation here, ensuring
+    // reproducibility and preventing the AI from compromising readiness integrity.
     const targetSkills = [...new Set([...requiredSkills, ...preferredSkills])];
     
     let matchedSkills = [];
@@ -61,6 +66,9 @@ export const getWorkflow = async (req, res, next) => {
     const user = await User.findById(req.user.id);
     const role = (user.targetRole || 'Software Engineer').toLowerCase();
     
+    // WHY: Workflow arrays are statically mapped to the user's role string.
+    // This provides a controlled, predictable sequence of stages (Vocab, MCQ, etc.)
+    // rather than allowing an AI to invent a random workflow that we haven't built UI for.
     let workflow = [];
     if (role.includes('frontend') || role.includes('ui')) {
       workflow = ['Resume Review', 'CSS/HTML Quiz', 'React Technical MCQ', 'Frontend Coding Challenge', 'System Design', 'HR Interview'];

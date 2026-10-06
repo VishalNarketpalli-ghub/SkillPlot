@@ -1,6 +1,6 @@
 import JobDescription from '../models/JobDescription.js';
 import User from '../models/User.js';
-import { generateStructuredOutput } from '../utils/gemini.js';
+import { generateStructuredOutput } from '../providers/aiProvider.js';
 
 export const analyzeJD = async (req, res, next) => {
   try {
@@ -35,7 +35,11 @@ export const analyzeJD = async (req, res, next) => {
     try {
       structuredData = await generateStructuredOutput(prompt, schema);
     } catch (parseError) {
-      console.error("Gemini JD Parse Error:", parseError);
+      console.error("AI Provider JD Parse Error:", parseError);
+      // WHY: Unlike the Resume upload which can gracefully fall back to storing the raw file,
+      // the Job Description requires immediate AI extraction of skills to function properly.
+      // If the AI fails here, the deterministic match algorithm will have no target skills
+      // to compare against. Therefore, we fail hard and prompt the user to try again.
       return res.status(500).json({ success: false, message: 'Failed to analyze job description with AI', code: 'AI_ERROR' });
     }
 

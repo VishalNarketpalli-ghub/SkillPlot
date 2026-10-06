@@ -1,3 +1,7 @@
+ 
+## 1. BACKEND_DEVELOPMENT.md
+
+````text
 # BACKEND_DEVELOPMENT.md
 
 # CareerReady Backend Development
@@ -13,7 +17,8 @@ REST API backend for the CareerReady responsive web application.
 - JWT
 - bcrypt
 - Gemini API
-- Judge0 in Phase 2
+- JDoodle API in Phase 2
+- Local Judge0 Docker as a future/planned execution provider
 
 ## Backend Responsibilities
 - Authentication
@@ -28,6 +33,148 @@ REST API backend for the CareerReady responsive web application.
 - Error handling
 - Security
 
+---
+
+# CODE EXECUTION PROVIDER ARCHITECTURE
+
+Phase 2 coding execution currently uses **JDoodle** as the active execution provider.
+
+The coding architecture must keep provider-specific execution logic isolated so that a future execution provider can be introduced without rewriting the coding controller, database schema, or frontend.
+
+## Current Architecture
+
+```text
+Coding Controller
+      ↓
+Code Execution Service
+      ↓
+JDoodle Provider
+      ↓
+JDoodle API
+````
+
+## Future Architecture
+
+```text
+Coding Controller
+      ↓
+Code Execution Service
+      ↓
+Provider Selector
+   ├── JDoodle Provider
+   └── Judge0 Provider
+          ↓
+      Local Judge0 Docker
+```
+
+## Provider Responsibilities
+
+### Coding Controller
+
+The coding controller remains responsible for:
+
+* receiving the coding submission
+* validating the request
+* retrieving the coding problem
+* iterating through test cases
+* calling the execution service
+* comparing expected output with actual output
+* calculating passed test cases
+* calculating the coding score
+* persisting the coding assessment/submission result
+* returning the frontend response
+
+The controller must not contain provider-specific API parsing logic.
+
+### Code Execution Service
+
+The execution service provides a provider-independent interface to the controller.
+
+Its responsibility is to:
+
+* call the configured execution provider
+* return a normalized execution result
+* hide provider-specific implementation details
+
+### JDoodle Provider
+
+The JDoodle provider is responsible for:
+
+* constructing the JDoodle API request
+* sending source code and input
+* interpreting JDoodle's response
+* mapping JDoodle-specific errors
+* returning the normalized execution result
+
+### Future Judge0 Provider
+
+A future Judge0 provider must implement the same normalized execution contract.
+
+Judge0 is currently a planned/future alternative and is not part of the active JDoodle implementation.
+
+Do not build the local Judge0 Docker environment or Judge0 provider unless explicitly included in the active development task.
+
+---
+
+## Normalized Execution Contract
+
+The provider layer should return a normalized result similar to:
+
+```js
+{
+  executionSuccess: boolean,
+  compileError: boolean,
+  runtimeError: boolean,
+  timedOut: boolean,
+  stdout: string,
+  stderr: string,
+  compileOutput: string,
+  providerError: null | {
+    type: string,
+    message: string
+  }
+}
+```
+
+The exact JDoodle response structure must not leak into the coding controller or frontend.
+
+This allows the application to remain provider-agnostic.
+
+---
+
+## Current JDoodle Rules
+
+* JDoodle is the active Phase 2 execution provider.
+* JDoodle credentials must remain backend-only.
+* Use `JDOODLE_CLIENT_ID` and `JDOODLE_CLIENT_SECRET`.
+* Do not expose JDoodle credentials to the frontend.
+* Do not store JDoodle credentials in source code.
+* Do not batch multiple coding test cases into one JDoodle request unless explicitly approved later.
+* The current implementation may execute one JDoodle request per test case.
+* Repeated failure-path tests should use controlled/mock provider responses where appropriate.
+* A small number of real JDoodle executions must still be used to verify the actual integration.
+* Frontend code must remain provider-agnostic.
+* Database schemas must remain provider-agnostic.
+
+---
+
+## Environment Variables
+
+Current Phase 2 environment configuration should include:
+
+```text
+JDOODLE_CLIENT_ID=
+JDOODLE_CLIENT_SECRET=
+```
+
+Future Judge0 configuration must be separate and must not be mixed with the active JDoodle configuration.
+
+Never commit real credentials.
+
+`.env.example` must contain only placeholder values.
+
+---
+
 ## Suggested Structure
 
 ```text
@@ -39,6 +186,7 @@ backend/
     ├── models/
     ├── routes/
     ├── services/
+    │   └── providers/
     ├── utils/
     ├── prompts/
     ├── validators/
@@ -46,7 +194,7 @@ backend/
     └── server.js
 ```
 
-Routes define endpoints. Controllers handle HTTP request/response concerns. Services contain business logic. Models define database structures. Middleware handles cross-cutting concerns.
+Routes define endpoints. Controllers handle HTTP request/response concerns. Services contain business logic. Models define database structures. Middleware handles cross-cutting concerns. Provider modules contain provider-specific external API logic.
 
 ---
 
@@ -65,6 +213,7 @@ Routes define endpoints. Controllers handle HTTP request/response concerns. Serv
 **Where:** `backend/`
 
 **How:**
+
 1. Initialize package configuration.
 2. Create `src/app.js`.
 3. Create `src/server.js`.
@@ -80,18 +229,20 @@ Routes define endpoints. Controllers handle HTTP request/response concerns. Serv
 ### TASK 1.2 — Git and Environment Convention
 
 Create:
-- `.env`
-- `.env.example`
-- `.gitignore`
+
+* `.env`
+* `.env.example`
+* `.gitignore`
 
 Never commit secrets.
 
 Expected environment categories:
-- server port
-- MongoDB connection string
-- JWT secret
-- Gemini credential
-- later Judge0 credentials
+
+* server port
+* MongoDB connection string
+* JWT secret
+* Gemini credential
+* later JDoodle credentials
 
 ---
 
@@ -110,26 +261,28 @@ Expected environment categories:
 ### TASK 1.4 — User Model
 
 Core fields:
-- name
-- email
-- passwordHash
-- education
-- degree
-- branch
-- graduationYear
-- skills
-- targetRole
-- experienceLevel
-- resumeId
-- personalityProfileId
+
+* name
+* email
+* passwordHash
+* education
+* degree
+* branch
+* graduationYear
+* skills
+* targetRole
+* experienceLevel
+* resumeId
+* personalityProfileId
 
 `personalityProfileId` remains null until that optional module exists.
 
 ### TASK 1.5 — Register/Login
 
 Implement:
-- `POST /api/auth/register`
-- `POST /api/auth/login`
+
+* `POST /api/auth/register`
+* `POST /api/auth/login`
 
 Use bcrypt for password hashing.
 
@@ -144,6 +297,7 @@ Never return `passwordHash` to the client.
 ### TASK 1.6 — JWT Middleware
 
 Create authentication middleware that:
+
 1. Reads bearer token.
 2. Verifies JWT.
 3. Identifies user.
@@ -158,12 +312,13 @@ Validation must occur before business logic.
 ### TASK 1.8 — Authentication Integration Test
 
 Verify:
-- registration
-- duplicate email rejection
-- login
-- incorrect password rejection
-- protected route without token
-- protected route with valid token
+
+* registration
+* duplicate email rejection
+* login
+* incorrect password rejection
+* protected route without token
+* protected route with valid token
 
 **CHECKPOINT:** Auth works end-to-end.
 
@@ -174,16 +329,18 @@ Verify:
 ### TASK 1.9 — User Profile API
 
 Implement:
-- `GET /api/users/me`
-- `PUT /api/users/me`
+
+* `GET /api/users/me`
+* `PUT /api/users/me`
 
 Allow CRUD/update of core profile fields.
 
 ### TASK 1.10 — Resume Model and Upload Endpoint
 
 Implement:
-- `POST /api/resume/upload`
-- `GET /api/resume/:id`
+
+* `POST /api/resume/upload`
+* `GET /api/resume/:id`
 
 Use Multer for multipart upload handling.
 
@@ -196,25 +353,27 @@ Store resume metadata and extracted information according to the selected storag
 ### TASK 1.11 — Resume Text Extraction
 
 For PDF resumes:
-- extract text using `pdf-parse`.
-- normalize extracted text.
-- perform initial regex-based skill extraction.
+
+* extract text using `pdf-parse`.
+* normalize extracted text.
+* perform initial regex-based skill extraction.
 
 The regex stage is deterministic preprocessing. Gemini will provide the richer interpretation later.
 
 ### TASK 1.12 — Job Description Model
 
 Create fields for:
-- userId
-- title
-- company
-- rawText
-- requiredSkills
-- preferredSkills
-- experienceRequirements
-- technicalRequirements
-- competencies
-- analysis
+
+* userId
+* title
+* company
+* rawText
+* requiredSkills
+* preferredSkills
+* experienceRequirements
+* technicalRequirements
+* competencies
+* analysis
 
 ---
 
@@ -225,34 +384,40 @@ Create fields for:
 **Objective:** Create one reusable AI integration pattern.
 
 **Rules:**
-- Prompts live under `src/prompts/`.
-- Structured outputs are validated.
-- Controllers do not contain large prompts.
-- Invalid AI output must result in retry or controlled error.
+
+* Prompts live under `src/prompts/`.
+* Structured outputs are validated.
+* Controllers do not contain large prompts.
+* Controllers must interact with Gemini through the `aiProvider.js` boundary rather than importing `GoogleGenerativeAI` directly.
+* Invalid AI output must result in retry or controlled error.
 
 ### TASK 1.14 — Resume Gemini Extraction
 
 Input:
-- extracted resume text
+
+* extracted resume text
 
 Output:
-- structured skills
-- education
-- projects/experience if included in the implemented schema
+
+* structured skills
+* education
+* projects/experience if included in the implemented schema
 
 Validate output before storage.
 
 ### TASK 1.15 — JD Gemini Analysis
 
 Input:
-- raw JD text
+
+* raw JD text
 
 Output:
-- required skills
-- preferred skills
-- experience requirements
-- technical requirements
-- relevant competencies
+
+* required skills
+* preferred skills
+* experience requirements
+* technical requirements
+* relevant competencies
 
 **Git commit:** `feat: add resume and jd ai analysis`
 
@@ -265,15 +430,17 @@ Output:
 **Critical rule:** Gemini does not calculate the authoritative match score.
 
 Implement one deterministic approach:
-- normalized keyword overlap
-- or TF-IDF/cosine similarity
+
+* normalized keyword overlap
+* or TF-IDF/cosine similarity
 
 The selected formula must be documented.
 
 Store enough evidence to explain:
-- matched skills/terms
-- missing skills/terms
-- resulting score
+
+* matched skills/terms
+* missing skills/terms
+* resulting score
 
 ### TASK 1.17 — Static Role Workflow
 
@@ -294,11 +461,12 @@ It is **not AI-generated** in Phase 1.
 ### TASK 1.18 — Resume/JD Analysis Endpoint
 
 Return:
-- resume data
-- JD data
-- match score
-- matched skills
-- missing skills
+
+* resume data
+* JD data
+* match score
+* matched skills
+* missing skills
 
 ---
 
@@ -311,12 +479,13 @@ Test:
 `Register → Login → Profile → Resume → Parse → JD → Match → Workflow`
 
 Record:
-- bug
-- severity
-- owner
-- reproduction steps
-- fix
-- retest status
+
+* bug
+* severity
+* owner
+* reproduction steps
+* fix
+* retest status
 
 **CHECKPOINT:** Phase 1 is integration-tested.
 
@@ -349,9 +518,10 @@ If the team is ahead, pull forward a small Phase 2 backend task.
 ### TASK 1.22 — Documentation From Actual Implementation
 
 Write:
-- Phase 1 backend development documentation
-- API documentation
-- database design
+
+* Phase 1 backend development documentation
+* API documentation
+* database design
 
 Do not document proposed functionality as implemented.
 
@@ -362,15 +532,16 @@ Do not document proposed functionality as implemented.
 ### TASK 1.23 — Phase 1 Sign-off
 
 Verify:
-- authentication
-- profile
-- resume upload
-- extraction
-- Gemini extraction
-- JD analysis
-- deterministic match score
-- static workflow
-- end-to-end flow
+
+* authentication
+* profile
+* resume upload
+* extraction
+* Gemini extraction
+* JD analysis
+* deterministic match score
+* static workflow
+* end-to-end flow
 
 Tag the Phase 1 release.
 
@@ -379,59 +550,105 @@ Tag the Phase 1 release.
 # PHASE 2 — RECRUITMENT SIMULATION + AI EVALUATION
 
 ## TASK 2.1 — Assessment Architecture
+
 Create assessment, question and attempt models.
 
 ## TASK 2.2 — Vocabulary
+
 Gemini generates questions. Backend scores against expected answers deterministically.
 
 ## TASK 2.3 — Grammar
+
 Gemini generates questions. Scoring remains deterministic.
 
 ## TASK 2.4 — Technical MCQs
+
 Generate role/skill-specific questions, validate structure, tag difficulty.
 
 ## TASK 2.5 — Adaptive Difficulty
+
 Implement:
-- score >= 80% → increase
-- score 50–79% → hold
-- score < 50% → decrease
+
+* score >= 80% → increase
+* score 50–79% → hold
+* score < 50% → decrease
 
 Do not implement Elo/IRT.
 
 ## TASK 2.6 — Coding
-Create problem model and submission API. Send submissions to Judge0. Store status, test results, runtime and memory.
+
+Create problem model and submission API.
+
+The coding submission must execute through the provider-independent code execution service.
+
+Current active provider:
+
+```text
+codingController
+      ↓
+codeExecutionService
+      ↓
+jdoodleProvider
+      ↓
+JDoodle API
+```
+
+The controller must not directly depend on JDoodle-specific response fields.
+
+Store:
+
+* execution status
+* test results
+* runtime where available
+* memory where available
+* compile/runtime errors
+* passed test count
+* coding score
+* provider error details when relevant
+
+The frontend must receive a provider-independent response.
+
+Future Judge0 support may be added through another provider implementing the same normalized execution contract.
+
+Do not build local Judge0 Docker as part of the current JDoodle implementation.
 
 ## TASK 2.7 — Technical Interview
+
 Use shared prompt/schema utility.
 
 Return structured:
-- technicalCorrectness
-- relevance
-- completeness
-- communication
-- overallScore
-- strengths
-- weaknesses
-- feedback
-- followUpQuestion
+
+* technicalCorrectness
+* relevance
+* completeness
+* communication
+* overallScore
+* strengths
+* weaknesses
+* feedback
+* followUpQuestion
 
 Maximum one follow-up.
 
 ## TASK 2.8 — HR Interview
+
 Use rubric:
-- situation
-- action
-- result
-- clarity
-- professionalism
-- relevance
+
+* situation
+* action
+* result
+* clarity
+* professionalism
+* relevance
 
 ## TASK 2.9 — Raw Results
+
 Store and return raw scores per stage.
 
 Do not calculate the overall readiness score in Phase 2.
 
 ## TASK 2.10 — Full Integration Test
+
 Run the complete recruitment simulation and log all failures.
 
 ---
@@ -449,10 +666,11 @@ Do not ask Gemini to calculate the final score.
 ## TASK 3.2 — Competency Mapping
 
 For every relevant skill, store evidence from:
-- resume
-- MCQ
-- coding
-- interview
+
+* resume
+* MCQ
+* coding
+* interview
 
 Include score/confidence/gap level where supported.
 
@@ -462,24 +680,27 @@ Compare:
 `role requirements` vs `candidate competency profile`
 
 Classify:
-- high
-- medium
-- low
+
+* high
+* medium
+* low
 
 Rank by importance and evidence.
 
 ## TASK 3.4 — Recommendation Engine
 
 Use:
-- skill-gap score
-- role importance
-- rule-based prioritization
+
+* skill-gap score
+* role importance
+* rule-based prioritization
 
 Every recommendation must have evidence.
 
 ## TASK 3.5 — Roadmap Generation
 
 Hybrid:
+
 1. deterministic skill-gap/rule logic chooses priorities.
 2. Gemini generates explanation/roadmap text.
 3. backend validates/stores the result.
@@ -489,37 +710,40 @@ Gemini does not decide the underlying priority without deterministic evidence.
 ## TASK 3.6 — Explainability
 
 Store:
-- triggering skill
-- score
-- threshold
-- role requirement
-- recommendation
-- reason
+
+* triggering skill
+* score
+* threshold
+* role requirement
+* recommendation
+* reason
 
 The UI receives a human-readable reason.
 
 ## TASK 3.7 — Final Security and Testing
 
 Test:
-- authentication
-- authorization
-- validation
-- AI failures
-- malformed AI JSON
-- database failures
-- external API failures
-- rate/abuse controls where appropriate
-- end-to-end flow
+
+* authentication
+* authorization
+* validation
+* AI failures
+* malformed AI JSON
+* database failures
+* external API failures
+* rate/abuse controls where appropriate
+* end-to-end flow
 
 ## TASK 3.8 — Deployment and Documentation
 
 Complete:
-- README
-- architecture diagram
-- API documentation
-- database design
-- AI architecture
-- screenshots
-- demo data
-- GitHub cleanup
-- viva notes
+
+* README
+* architecture diagram
+* API documentation
+* database design
+* AI architecture
+* screenshots
+* demo data
+* GitHub cleanup
+* viva notes

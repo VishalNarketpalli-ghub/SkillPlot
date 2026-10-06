@@ -264,41 +264,126 @@ Resume/JD
 
 Results show raw scores per stage. No overall aggregation yet.
 
+## Code Execution Provider Strategy
+
+Phase 2 coding execution uses **JDoodle** as the current active execution provider.
+
+The coding implementation must use a minimal provider boundary so that provider-specific API behavior does not leak into the coding controller, database schema, or frontend.
+
+### Current Architecture
+
+```text
+Coding Controller
+      ↓
+Code Execution Service
+      ↓
+JDoodle Provider
+      ↓
+JDoodle API
+````
+
+### Future Architecture
+
+```text
+Coding Controller
+      ↓
+Code Execution Service
+      ↓
+Provider Selector
+   ├── JDoodle Provider
+   └── Judge0 Provider
+          ↓
+      Local Judge0 Docker
+```
+
+### Current Rules
+
+* JDoodle is the active Phase 2 coding execution provider.
+* JDoodle credentials remain backend-only.
+* The frontend must not contain JDoodle credentials.
+* The coding controller remains responsible for test-case iteration, expected-vs-actual comparison, scoring, persistence and frontend response formatting.
+* Provider-specific API parsing belongs inside the provider layer.
+* The code execution service returns a normalized provider-independent result.
+* The frontend remains provider-agnostic.
+* Database schemas remain provider-agnostic.
+* Do not batch multiple test cases into one JDoodle request unless explicitly approved.
+* The current implementation may perform one provider execution per test case.
+* Repeated failure-path testing may use controlled/mock provider responses where appropriate.
+* Real JDoodle executions must still be used to verify the actual integration.
+
+### Normalized Execution Contract
+
+The provider layer should expose a result similar to:
+
+```js
+{
+  executionSuccess: boolean,
+  compileError: boolean,
+  runtimeError: boolean,
+  timedOut: boolean,
+  stdout: string,
+  stderr: string,
+  compileOutput: string,
+  providerError: null | {
+    type: string,
+    message: string
+  }
+}
+```
+
+The exact JDoodle response format must not propagate beyond the provider layer.
+
+### Future Judge0 Support
+
+Judge0 is a planned/future alternative execution provider.
+
+The future Judge0 implementation may use local Judge0 Docker.
+
+A future Judge0 provider must implement the same normalized execution contract as the JDoodle provider.
+
+Do not build local Judge0 Docker or a Judge0 provider as part of the current JDoodle implementation unless explicitly added to the active scope.
+
 ## Core Work
-- Gemini-generated vocabulary and grammar questions.
-- Deterministic answer scoring.
-- Gemini-generated technical MCQs filtered by role/skills and tagged by difficulty.
-- Threshold-based adaptive difficulty:
-  - >=80%: increase
-  - 50–79%: hold
-  - <50%: decrease
-- Coding problems and Judge0 execution/test-case scoring.
-- Technical interview with structured Gemini output.
-- Maximum one follow-up question.
-- HR interview with structured Gemini output.
-- Results screen with raw per-stage scores.
-- Full integration testing and bug logging.
+
+* Gemini-generated vocabulary and grammar questions.
+* Deterministic answer scoring.
+* Gemini-generated technical MCQs filtered by role/skills and tagged by difficulty.
+* Threshold-based adaptive difficulty:
+
+  * > =80%: increase
+  * 50–79%: hold
+  * <50%: decrease
+* Coding problems and provider-independent execution/test-case scoring using JDoodle as the active provider.
+* Technical interview with structured Gemini output.
+* Maximum one follow-up question.
+* HR interview with structured Gemini output.
+* Results screen with raw per-stage scores.
+* Full integration testing and bug logging.
 
 ## Interview Technical Rubric
+
 Structured output must include:
-- technicalCorrectness
-- relevance
-- completeness
-- communication
-- overallScore
-- strengths
-- weaknesses
-- feedback
-- followUpQuestion
+
+* technicalCorrectness
+* relevance
+* completeness
+* communication
+* overallScore
+* strengths
+* weaknesses
+* feedback
+* followUpQuestion
 
 ## HR Rubric
+
 Evaluate:
-- situation
-- action
-- result
-- clarity
-- professionalism
-- relevance
+
+* situation
+* action
+* result
+* clarity
+* professionalism
+* relevance
 
 ---
 
@@ -307,7 +392,9 @@ Evaluate:
 **Days 41–60**
 
 ## Exit Criteria
+
 The system can:
+
 1. Calculate a deterministic role-configured readiness score.
 2. Build a per-skill competency evidence table.
 3. Detect and rank skill gaps deterministically.
@@ -315,21 +402,24 @@ The system can:
 5. Show recommendation reasons backed by stored scores/thresholds.
 
 ## Core Work
-- Config-driven weighted readiness score.
-- Competency mapping.
-- Skill-gap engine.
-- Rule-based prioritization.
-- Gemini-generated roadmap explanation text.
-- Recommendation evidence storage.
-- Final README.
-- Architecture diagram.
-- Screenshots.
-- Demo data.
-- GitHub cleanup.
-- Viva preparation.
+
+* Config-driven weighted readiness score.
+* Competency mapping.
+* Skill-gap engine.
+* Rule-based prioritization.
+* Gemini-generated roadmap explanation text.
+* Recommendation evidence storage.
+* Final README.
+* Architecture diagram.
+* Screenshots.
+* Demo data.
+* GitHub cleanup.
+* Viva preparation.
 
 ## Protected Priority
+
 If Phase 3 slips, protect in this order:
+
 1. Readiness score engine.
 2. Competency mapping.
 3. Skill-gap detection.
@@ -341,22 +431,23 @@ If Phase 3 slips, protect in this order:
 
 # Development Rules
 
-- Build incrementally.
-- Do not dump the whole application at once.
-- Do not claim a feature is implemented until it is actually implemented.
-- Explain code before providing it.
-- Keep frontend and backend responsibilities separate.
-- Use deterministic code for deterministic business logic.
-- Use AI for language understanding/generation/evaluation where it adds genuine value.
-- Validate structured AI output before storage/use.
-- Keep secrets in `.env`.
-- Never commit `.env`.
-- Test continuously.
-- Use meaningful Git commits.
-- Every important user action needs loading, success, and error states.
-- Academic claims must be technically defensible.
+* Build incrementally.
+* Do not dump the whole application at once.
+* Do not claim a feature is implemented until it is actually implemented.
+* Explain code before providing it.
+* Keep frontend and backend responsibilities separate.
+* Use deterministic code for deterministic business logic.
+* Use AI for language understanding/generation/evaluation where it adds genuine value.
+* Validate structured AI output before storage/use.
+* Keep secrets in `.env`.
+* Never commit `.env`.
+* Test continuously.
+* Use meaningful Git commits.
+* Every important user action needs loading, success, and error states.
+* Academic claims must be technically defensible.
 
 ## State Tracking
+
 Every development response begins:
 
 `[CURRENT PHASE: X | CURRENT TASK: Y | NEXT TASK: Z]`

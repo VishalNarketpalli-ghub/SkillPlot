@@ -9,6 +9,7 @@ import analysisRoutes from './routes/analysis.js';
 import assessmentRoutes from './routes/assessment.js';
 import interviewRoutes from './routes/interview.js';
 import codingRoutes from './routes/coding.js';
+import intelligenceRoutes from './routes/intelligence.js';
 import { errorHandler } from './middleware/error.js';
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/api/analysis', analysisRoutes);
 app.use('/api/assessment', assessmentRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/coding', codingRoutes);
+app.use('/api/intelligence', intelligenceRoutes);
 
 // Error Handling Middleware
 app.use(errorHandler);

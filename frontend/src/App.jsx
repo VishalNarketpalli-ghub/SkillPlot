@@ -18,6 +18,9 @@ import { CodingAssessment } from './screens/CodingAssessment';
 import { TechnicalInterview } from './screens/TechnicalInterview';
 import { HRInterview } from './screens/HRInterview';
 import { Results } from './screens/Results';
+import { ReadinessScore } from './screens/ReadinessScore';
+import { SkillGap } from './screens/SkillGap';
+import { Roadmap } from './screens/Roadmap';
 
 const router = createBrowserRouter([
   {
@@ -42,6 +45,9 @@ const router = createBrowserRouter([
           { path: 'interview/technical', element: <TechnicalInterview /> },
           { path: 'interview/hr', element: <HRInterview /> },
           { path: 'results', element: <Results /> },
+          { path: 'readiness', element: <ReadinessScore /> },
+          { path: 'skill-gap', element: <SkillGap /> },
+          { path: 'roadmap', element: <Roadmap /> },
         ]
       }
     ],

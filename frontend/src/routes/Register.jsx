@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Card } from '../components/Card';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
+import { useAuth } from '../context/AuthContext';
 
 export const Register = () => {
   const [name, setName] = useState('');
@@ -10,6 +11,7 @@ export const Register = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -29,7 +31,7 @@ export const Register = () => {
         throw new Error(data.message || 'Registration failed');
       }
 
-      localStorage.setItem('token', data.data.token);
+      login(data.data.token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);

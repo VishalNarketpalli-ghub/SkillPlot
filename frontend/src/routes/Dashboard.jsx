@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -31,16 +32,10 @@ export const Dashboard = () => {
     fetchWorkflow();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
         <h2>Welcome to CareerReady</h2>
-        <Button variant="secondary" onClick={handleLogout}>Logout</Button>
       </div>
       
       <Card>
@@ -53,10 +48,12 @@ export const Dashboard = () => {
               <React.Fragment key={idx}>
                 <div style={{ 
                   padding: '0.5rem 1rem', 
-                  background: 'var(--primary-color)', 
-                  color: 'white', 
+                  background: 'var(--accent-bg, rgba(99, 102, 241, 0.15))', 
+                  color: 'var(--accent-primary, #4f46e5)', 
+                  border: '1px solid var(--accent-hover, #6366f1)',
                   borderRadius: '20px',
-                  fontSize: '0.9rem'
+                  fontSize: '0.9rem',
+                  fontWeight: 600
                 }}>
                   {step}
                 </div>

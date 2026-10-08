@@ -1,6 +1,7 @@
 import React from 'react';
 import { RouterProvider, createBrowserRouter, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './theme/ThemeProvider';
+import { AuthProvider } from './context/AuthContext';
 import { RootLayout } from './routes/RootLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 
@@ -57,7 +58,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <ThemeProvider>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
